@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rahul Ranjan — Platform & Infrastructure Architect</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet" />
+  <style>
+    /* ── TOKENS ─────────────────────────────────────────────── */
+    :root {
+      --bg:       #0a0e17;
+      --bg2:      #111827;
+      --bg3:      #1a2236;
+      --border:   #1e2d45;
+      --accent:   #3b82f6;
+      --accent2:  #06b6d4;
+      --green:    #10b981;
+      --amber:    #f59e0b;
+      --text:     #e2e8f0;
+      --muted:    #64748b;
+      --mono:     'IBM Plex Mono', monospace;
+      --sans:     'IBM Plex Sans', sans-serif;
+    }
+
+    /* ── RESET ──────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 15px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { color: var(--accent2); }
+
+    /* ── GRID BACKGROUND ────────────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(59,130,246,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(59,130,246,0.04) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── LAYOUT ─────────────────────────────────────────────── */
+    .container { max-width: 860px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+    /* ── NAV ────────────────────────────────────────────────── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(10,14,23,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 0;
+    }
+    nav .container { display: flex; justify-content: space-between; align-items: center; }
+    .nav-logo { font-family: var(--mono); font-size: 13px; color: var(--accent); font-weight: 600; letter-spacing: 0.05em; }
+    .nav-links { display: flex; gap: 28px; }
+    .nav-links a { font-family: var(--mono); font-size: 12px; color: var(--muted); letter-spacing: 0.08em; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--text); }
+
+    /* ── HERO ────────────────────────────────────────────────── */
+    .hero {
+      padding: 100px 0 80px;
+      border-bottom: 1px solid var(--border);
+    }
+    .hero-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .hero-label::before {
+      content: '';
+      display: inline-block;
+      width: 24px; height: 1px;
+      background: var(--accent);
+    }
+    h1 {
+      font-family: var(--mono);
+      font-size: clamp(32px, 6vw, 52px);
+      font-weight: 600;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+      color: #fff;
+    }
+    .hero-sub {
+      font-family: var(--mono);
+      font-size: clamp(14px, 2.5vw, 18px);
+      color: var(--accent2);
+      margin-bottom: 28px;
+      font-weight: 400;
+    }
+    .hero-desc {
+      font-size: 15px;
+      color: var(--muted);
+      max-width: 600px;
+      line-height: 1.8;
+      margin-bottom: 40px;
+      font-weight: 300;
+    }
+    .hero-desc strong { color: var(--text); font-weight: 600; }
+    .hero-cta { display: flex; gap: 14px; flex-wrap: wrap; }
+    .btn {
+      font-family: var(--mono);
+      font-size: 12px;
+      padding: 10px 22px;
+      border-radius: 4px;
+      letter-spacing: 0.08em;
+      transition: all 0.2s;
+      cursor: pointer;
+      display: inline-block;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      border: 1px solid var(--accent);
+    }
+    .btn-primary:hover { background: var(--accent2); border-color: var(--accent2); color: #fff; }
+    .btn-outline {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── STATS ROW ──────────────────────────────────────────── */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      margin: 60px 0;
+    }
+    .stat {
+      background: var(--bg2);
+      padding: 24px 20px;
+      text-align: center;
+    }
+    .stat-number {
+      font-family: var(--mono);
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .stat-label { font-size: 11px; color: var(--muted); letter-spacing: 0.05em; }
+
+    /* ── SECTION ────────────────────────────────────────────── */
+    section { padding: 72px 0; border-bottom: 1px solid var(--border); }
+    .section-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .section-label::before { content: '//'; color: var(--border); }
+    .section-title {
+      font-family: var(--mono);
+      font-size: 22px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 40px;
+    }
+
+    /* ── SKILLS ─────────────────────────────────────────────── */
+    .skills-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .skill-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 20px 22px;
+      transition: border-color 0.2s;
+    }
+    .skill-card:hover { border-color: var(--accent); }
+    .skill-cat {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--accent2);
+      letter-spacing: 0.1em;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+    .skill-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tag {
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 3px 9px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      color: var(--text);
+    }
+    .tag.hot { border-color: var(--accent); color: var(--accent); }
+
+    /* ── TIMELINE ───────────────────────────────────────────── */
+    .timeline { position: relative; padding-left: 28px; }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 8px; bottom: 0;
+      width: 1px;
+      background: linear-gradient(to bottom, var(--accent), var(--border));
+    }
+    .tl-item { position: relative; margin-bottom: 48px; }
+    .tl-dot {
+      position: absolute;
+      left: -33px; top: 6px;
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid var(--bg);
+      box-shadow: 0 0 8px var(--accent);
+    }
+    .tl-item.dim .tl-dot { background: var(--muted); box-shadow: none; }
+    .tl-period {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      margin-bottom: 4px;
+    }
+    .tl-role {
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 2px;
+    }
+    .tl-company {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+    .tl-points { list-style: none; }
+    .tl-points li {
+      font-size: 14px;
+      color: var(--muted);
+      padding: 3px 0 3px 16px;
+      position: relative;
+      font-weight: 300;
+    }
+    .tl-points li::before {
+      content: '→';
+      position: absolute; left: 0;
+      color: var(--accent2);
+      font-size: 12px;
+    }
+    .tl-points li strong { color: var(--text); font-weight: 600; }
+    .progression {
+      display: inline-flex; gap: 6px; align-items: center;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 4px 14px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+    .progression span { color: var(--accent); }
+
+    /* ── PROJECTS ───────────────────────────────────────────── */
+    .projects-grid { display: grid; gap: 16px; }
+    .project-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 28px;
+      transition: border-color 0.25s, transform 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .project-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .project-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .project-card:hover::before { opacity: 1; }
+    .project-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+    .project-name {
+      font-family: var(--mono);
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
+    }
+    .project-status {
+      font-family: var(--mono);
+      font-size: 10px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      letter-spacing: 0.08em;
+    }
+    .status-building { background: rgba(245,158,11,0.15); color: var(--amber); border: 1px solid rgba(245,158,11,0.3); }
+    .status-planned  { background: rgba(100,116,139,0.15); color: var(--muted);  border: 1px solid var(--border); }
+    .status-live     { background: rgba(16,185,129,0.15);  color: var(--green);  border: 1px solid rgba(16,185,129,0.3); }
+    .project-desc { font-size: 13px; color: var(--muted); line-height: 1.7; margin-bottom: 16px; font-weight: 300; }
+    .project-stack { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+    .project-links { display: flex; gap: 14px; }
+    .project-links a {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      transition: color 0.2s;
+    }
+    .project-links a:hover { color: var(--accent); }
+    .project-links a::before { content: '↗ '; }
+
+    /* ── ABOUT ──────────────────────────────────────────────── */
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
+    .about-text p { font-size: 14px; color: var(--muted); line-height: 1.9; margin-bottom: 16px; font-weight: 300; }
+    .about-text strong { color: var(--text); font-weight: 600; }
+    .about-facts { display: grid; gap: 12px; }
+    .fact {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 16px 18px;
+      display: flex; gap: 14px; align-items: flex-start;
+    }
+    .fact-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+    .fact-label { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: 0.1em; margin-bottom: 3px; }
+    .fact-value { font-size: 13px; color: var(--text); }
+
+    /* ── AWARDS ─────────────────────────────────────────────── */
+    .awards-list { display: grid; gap: 10px; }
+    .award {
+      display: flex; gap: 14px; align-items: center;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 14px 18px;
+    }
+    .award-icon { font-size: 20px; flex-shrink: 0; }
+    .award-text { font-size: 13px; color: var(--muted); font-weight: 300; }
+    .award-text strong { color: var(--text); font-weight: 600; }
+
+    /* ── CONTACT ────────────────────────────────────────────── */
+    .contact-row {
+      display: flex; gap: 12px; flex-wrap: wrap;
+    }
+    .contact-item {
+      display: flex; gap: 10px; align-items: center;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px 18px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+      transition: border-color 0.2s;
+    }
+    .contact-item:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── FOOTER ─────────────────────────────────────────────── */
+    footer {
+      padding: 32px 0;
+      text-align: center;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    /* ── ANIMATIONS ─────────────────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .hero > * { animation: fadeUp 0.6s ease both; }
+    .hero .hero-label   { animation-delay: 0.1s; }
+    .hero h1            { animation-delay: 0.2s; }
+    .hero .hero-sub     { animation-delay: 0.3s; }
+    .hero .hero-desc    { animation-delay: 0.4s; }
+    .hero .hero-cta     { animation-delay: 0.5s; }
+
+    /* ── RESPONSIVE ─────────────────────────────────────────── */
+    @media (max-width: 640px) {
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .skills-grid { grid-template-columns: 1fr; }
+      .about-grid  { grid-template-columns: 1fr; }
+      .nav-links   { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="container">
+      <div class="nav-logo">rahulruns.dev</div>
+      <div class="nav-links">
+        <a href="#skills">Skills</a>
+        <a href="#experience">Experience</a>
+        <a href="#projects">Projects</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div class="container">
+    <section class="hero" style="border:none;">
+      <div class="hero-label">Platform &amp; Infrastructure Architect</div>
+      <h1>Rahul Ranjan</h1>
+      <div class="hero-sub">$ build_systems --from scratch --scale enterprise</div>
+      <p class="hero-desc">
+        I design and ship <strong>automation platforms</strong> that turn manual infrastructure into 
+        repeatable, code-driven systems — from Day-0 provisioning to Day-N operations. 
+        21 years of building things that matter, most recently at 
+        <strong>Hewlett Packard Enterprise</strong> where I led the architecture of VMware-as-a-Service 
+        and an <strong>AI Core Engine</strong> that predated the LLM era.
+      </p>
+      <div class="hero-cta">
+        <a href="#projects" class="btn btn-primary">View Projects</a>
+        <a href="https://linkedin.com/in/rahulranjan" target="_blank" class="btn btn-outline">LinkedIn →</a>
+        <a href="https://github.com/rahulruns" target="_blank" class="btn btn-outline">GitHub →</a>
+      </div>
+    </section>
+  </div>
+
+  <!-- STATS -->
+  <div class="container">
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-number">21+</div>
+        <div class="stat-label">Years Experience</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">~100%</div>
+        <div class="stat-label">Automation Coverage</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">5+</div>
+        <div class="stat-label">Enterprise Releases</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">2018</div>
+        <div class="stat-label">AI Innovation Award</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SKILLS -->
+  <div class="container">
+    <section id="skills">
+      <div class="section-label">Core Skills</div>
+      <div class="section-title">What I work with</div>
+      <div class="skills-grid">
+
+        <div class="skill-card">
+          <div class="skill-cat">Automation &amp; IaC</div>
+          <div class="skill-tags">
+            <span class="tag hot">Terraform</span>
+            <span class="tag hot">Python</span>
+            <span class="tag">Shell Script</span>
+            <span class="tag">Perl</span>
+            <span class="tag">Go</span>
+            <span class="tag">CI/CD</span>
+          </div>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-cat">AI &amp; Backend</div>
+          <div class="skill-tags">
+            <span class="tag hot">LangGraph</span>
+            <span class="tag hot">FastAPI</span>
+            <span class="tag hot">Text-to-SQL</span>
+            <span class="tag">REST APIs</span>
+            <span class="tag">NLP/NLU</span>
+            <span class="tag">Couchbase</span>
+          </div>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-cat">Infrastructure</div>
+          <div class="skill-tags">
+            <span class="tag hot">VMware / NSX-T</span>
+            <span class="tag">HPE Synergy</span>
+            <span class="tag">HPE PCE</span>
+            <span class="tag">SAN / Connectrix</span>
+            <span class="tag">PowerPath</span>
+            <span class="tag">Linux / AIX</span>
+          </div>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-cat">Cloud &amp; Platform</div>
+          <div class="skill-tags">
+            <span class="tag">Hybrid IT</span>
+            <span class="tag">GL Metal</span>
+            <span class="tag">CMO APIs</span>
+            <span class="tag">AWS</span>
+            <span class="tag">GitHub Actions</span>
+            <span class="tag">Observability</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </div>
+
+  <!-- EXPERIENCE -->
+  <div class="container">
+    <section id="experience">
+      <div class="section-label">Experience</div>
+      <div class="section-title">Career Timeline</div>
+
+      <div class="timeline">
+
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-period">Sep 2011 — Jan 2026</div>
+          <div class="tl-role">Senior Cloud Developer (Expert)</div>
+          <div class="tl-company">Hewlett Packard Enterprise</div>
+          <div class="progression">
+            <span>Specialist</span> → <span>Senior Specialist</span> → <span>Expert</span>
+          </div>
+          <ul class="tl-points">
+            <li>Architected <strong>VMaaS / VMCaaS automation platform from scratch</strong> — full Day-0, Day-1 &amp; Day-N lifecycle orchestration</li>
+            <li>Designed the <strong>Service Definition Engine</strong> and parser coordinating CMO APIs, GL Metal and Terraform</li>
+            <li>Built <strong>custom Terraform providers in Go</strong>; pushed automation coverage from 60% → ~100%</li>
+            <li>Added <strong>NSX-T, Fiber Channel, Site HA</strong> support — wins on major enterprise customer deals</li>
+            <li>Built <strong>AI Core Engine (2018)</strong> — NLP/NLU chatbot for enterprise infrastructure queries, won HPE Parasparam Innovation Award</li>
+            <li>Mentored engineers across India &amp; US; supported multiple production customer deployments</li>
+          </ul>
+        </div>
+
+        <div class="tl-item dim">
+          <div class="tl-dot"></div>
+          <div class="tl-period">2010 — 2011</div>
+          <div class="tl-role">SQA Engineer</div>
+          <div class="tl-company">Symantec Software India</div>
+          <ul class="tl-points">
+            <li>Veritas Volume Manager qualification on AIX; interoperability testing; Shell automation</li>
+          </ul>
+        </div>
+
+        <div class="tl-item dim">
+          <div class="tl-dot"></div>
+          <div class="tl-period">2007 — 2009</div>
+          <div class="tl-role">Software Engineer</div>
+          <div class="tl-company">EMC Data Storage Systems</div>
+          <ul class="tl-points">
+            <li>PowerPath qualification on Linux &amp; AIX; Perl/Shell automation; SAN systems — Silver &amp; Bronze Star Awards</li>
+          </ul>
+        </div>
+
+        <div class="tl-item dim">
+          <div class="tl-dot"></div>
+          <div class="tl-period">2005 — 2007</div>
+          <div class="tl-role">Engineer – Networking / DB Automation</div>
+          <div class="tl-company">Satyam Computers (Tech Mahindra)</div>
+          <ul class="tl-points">
+            <li>Remote DB2 &amp; Oracle admin for Nestle on IBM HACMP/AIX; Shell-scripted fix-pack management</li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+  </div>
+
+  <!-- PROJECTS -->
+  <div class="container">
+    <section id="projects">
+      <div class="section-label">Projects</div>
+      <div class="section-title">Things I'm building</div>
+
+      <!--
+        ════════════════════════════════════════════════════════
+        HOW TO ADD A NEW PROJECT (Rahul — edit only this block):
+
+        Copy one <div class="project-card"> block below,
+        paste it here, and fill in:
+          - project-name    : your repo/project name
+          - project-status  : change class to status-building / status-live / status-planned
+                              and text to "BUILDING" / "LIVE" / "PLANNED"
+          - project-desc    : 2-3 sentence description
+          - tag             : add/remove tech tags (add class="tag hot" for primary tech)
+          - project-links   : update the href URLs to your GitHub repo and live demo
+
+        That's it. No other file to change.
+        ════════════════════════════════════════════════════════
+      -->
+
+      <div class="projects-grid">
+
+        <!-- PROJECT 1 -->
+        <div class="project-card">
+          <div class="project-header">
+            <div class="project-name">text-to-sql-engine</div>
+            <div class="project-status status-building">BUILDING</div>
+          </div>
+          <p class="project-desc">
+            A natural language to SQL system built with FastAPI and LangGraph. Takes user queries in plain English, 
+            orchestrates a multi-step reasoning workflow, and returns SQL queries with execution results. 
+            Designed for infrastructure and operational databases.
+          </p>
+          <div class="project-stack">
+            <span class="tag hot">Python</span>
+            <span class="tag hot">LangGraph</span>
+            <span class="tag hot">FastAPI</span>
+            <span class="tag">SQLAlchemy</span>
+            <span class="tag">LLM</span>
+          </div>
+          <div class="project-links">
+            <a href="https://github.com/rahulruns" target="_blank">GitHub</a>
+          </div>
+        </div>
+
+        <!-- PROJECT 2 -->
+        <div class="project-card">
+          <div class="project-header">
+            <div class="project-name">infra-automation-framework</div>
+            <div class="project-status status-planned">PLANNED</div>
+          </div>
+          <p class="project-desc">
+            A schema-driven infrastructure automation framework in Python and Terraform. 
+            Models compute, storage and networking as structured definitions and orchestrates 
+            Day-0, Day-1 and Day-N lifecycle operations — open-source distillation of VMaaS patterns.
+          </p>
+          <div class="project-stack">
+            <span class="tag hot">Python</span>
+            <span class="tag hot">Terraform</span>
+            <span class="tag">JSON Schema</span>
+            <span class="tag">REST APIs</span>
+            <span class="tag">IaC</span>
+          </div>
+          <div class="project-links">
+            <a href="https://github.com/rahulruns" target="_blank">GitHub</a>
+          </div>
+        </div>
+
+        <!-- PROJECT 3 -->
+        <div class="project-card">
+          <div class="project-header">
+            <div class="project-name">ai-infra-advisor</div>
+            <div class="project-status status-planned">PLANNED</div>
+          </div>
+          <p class="project-desc">
+            An AI-powered infrastructure recommendation engine — spiritual successor to the 2018 HPE AI Core Engine. 
+            Ingests architecture requirements, reasons over infrastructure constraints, 
+            and recommends optimal configurations using LangGraph workflows.
+          </p>
+          <div class="project-stack">
+            <span class="tag hot">LangGraph</span>
+            <span class="tag hot">FastAPI</span>
+            <span class="tag">Python</span>
+            <span class="tag">RAG</span>
+            <span class="tag">Vector DB</span>
+          </div>
+          <div class="project-links">
+            <a href="https://github.com/rahulruns" target="_blank">GitHub</a>
+          </div>
+        </div>
+
+        <!-- PROJECT 4 — YOUR SECOND IDEA GOES HERE -->
+        <div class="project-card">
+          <div class="project-header">
+            <div class="project-name">your-next-idea</div>
+            <div class="project-status status-planned">PLANNED</div>
+          </div>
+          <p class="project-desc">
+            Coming soon. Update this card with your second project idea — 
+            just edit the name, description, and tags above.
+          </p>
+          <div class="project-stack">
+            <span class="tag">Python</span>
+            <span class="tag">TBD</span>
+          </div>
+          <div class="project-links">
+            <a href="https://github.com/rahulruns" target="_blank">GitHub</a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </div>
+
+  <!-- ABOUT -->
+  <div class="container">
+    <section id="about">
+      <div class="section-label">About</div>
+      <div class="section-title">The longer version</div>
+      <div class="about-grid">
+        <div class="about-text">
+          <p>
+            I build the automation systems that make enterprise infrastructure deployable at scale — 
+            from zero to fully orchestrated, <strong>Day-0 through Day-N</strong>.
+          </p>
+          <p>
+            Over 21 years, I progressed from shell scripting on AIX servers to architecting 
+            <strong>VMware-as-a-Service platforms</strong> at HPE, reaching Expert level. 
+            I've learned that the hardest part of infrastructure automation isn't the code — 
+            it's designing systems that are <strong>reentrant, schema-driven, and robust 
+            enough for real production</strong>.
+          </p>
+          <p>
+            I built an <strong>AI Core Engine back in 2018</strong> — a natural language query system 
+            for enterprise infrastructure — long before LLMs were mainstream. That same curiosity 
+            now drives my work with LangGraph and Text-to-SQL systems.
+          </p>
+          <p>
+            Currently building in public: open-source infrastructure tools and AI-assisted 
+            platform engineering systems that distil what I learned at enterprise scale.
+          </p>
+        </div>
+        <div class="about-facts">
+          <div class="fact">
+            <div class="fact-icon">📍</div>
+            <div>
+              <div class="fact-label">LOCATION</div>
+              <div class="fact-value">Bengaluru, India</div>
+            </div>
+          </div>
+          <div class="fact">
+            <div class="fact-icon">🎓</div>
+            <div>
+              <div class="fact-label">EDUCATION</div>
+              <div class="fact-value">B.E. Computer Science · MBA (IT) · M.Tech IT</div>
+            </div>
+          </div>
+          <div class="fact">
+            <div class="fact-icon">🏆</div>
+            <div>
+              <div class="fact-label">CERTIFICATIONS</div>
+              <div class="fact-value">IBM DB2 701 · ITIL Foundation · Diploma in Networking</div>
+            </div>
+          </div>
+          <div class="fact">
+            <div class="fact-icon">🔍</div>
+            <div>
+              <div class="fact-label">OPEN TO</div>
+              <div class="fact-value">Platform Architecture · Automation · AI Infra · Remote / Hybrid</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AWARDS -->
+      <div style="margin-top: 48px;">
+        <div class="section-label" style="margin-bottom: 20px;">Recognition</div>
+        <div class="awards-list">
+          <div class="award">
+            <div class="award-icon">🥇</div>
+            <div class="award-text"><strong>HPE Parasparam Innovation Award (2018)</strong> — AI Core Engine: enterprise NLP chatbot for infrastructure queries</div>
+          </div>
+          <div class="award">
+            <div class="award-icon">⭐</div>
+            <div class="award-text"><strong>HPE E-Award</strong> — Converged System Solution</div>
+          </div>
+          <div class="award">
+            <div class="award-icon">⭐</div>
+            <div class="award-text"><strong>HPE E-Award</strong> — Hadoop Appliance</div>
+          </div>
+          <div class="award">
+            <div class="award-icon">🏅</div>
+            <div class="award-text"><strong>HPE President Quality Award Nomination</strong> — Automation Framework</div>
+          </div>
+          <div class="award">
+            <div class="award-icon">🥈</div>
+            <div class="award-text"><strong>EMC Silver Star Award</strong> — PowerPath Qualification on Linux</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- CONTACT -->
+  <div class="container">
+    <section id="contact" style="border:none;">
+      <div class="section-label">Contact</div>
+      <div class="section-title">Get in touch</div>
+      <p style="font-size:14px; color:var(--muted); margin-bottom:28px; font-weight:300;">
+        Open to senior roles in Platform Architecture, Infrastructure Automation, and AI-driven Platform Engineering.<br/>
+        Hybrid or remote. Feel free to reach out.
+      </p>
+      <div class="contact-row">
+        <a href="https://linkedin.com/in/rahulranjan" target="_blank" class="contact-item">
+          <span>in</span> LinkedIn
+        </a>
+        <a href="https://github.com/rahulruns" target="_blank" class="contact-item">
+          <span>⌥</span> GitHub
+        </a>
+        <a href="mailto:rahul.ranjan@gmail.com" class="contact-item">
+          <span>@</span> Email
+        </a>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <div class="container">
+      <span style="color:var(--border)">// </span>built with intention, not a template &nbsp;·&nbsp; rahulruns.dev &nbsp;·&nbsp; 2026
+    </div>
+  </footer>
+
+</body>
+</html>
